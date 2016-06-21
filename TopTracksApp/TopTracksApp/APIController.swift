@@ -2,36 +2,70 @@
 //  APIController.swift
 //  TopTracksApp
 //
-//  Created by Phil Wright on 6/20/16.
-//  Copyright © 2016 Touchopia, LLC. All rights reserved.
+//  Created by don't touch me on 6/20/16.
+//  Copyright © 2016 trvl, LLC. All rights reserved.
 //
 
 import UIKit
 
 class APIController: NSObject {
     
-    // Create a session constant
     let session = NSURLSession.sharedSession()
     
-    // Fetch the Artists from the Web API
     
     func fetchArtists(query: String) {
         
-        // 1. Put the URLString for the API Call
         let urlString = "https://api.spotify.com/v1/search?q=\(query)&type=artist"
         
-        print(urlString)
-        
-        // 2. Attempt to create a valid NSURL from the string
         if let url = NSURL(string: urlString) {
             
-            // 3. Create a Data Task for pulling the data from the URL
-            
             let task = session.dataTaskWithURL(url, completionHandler: {
-              
+                
                 (data, response, error) in
                 
-                // 4. Check if there is an error
+                if error != nil {
+                    print(error?.localizedDescription)
+                    return
+                }
+                if let jsonDictionary = self.parseJSON(data) {
+                   
+                    if let artistsDict = jsonDictionary["artists"] as? JSONDictionary {
+                        
+                        if let itemsArray = artistsDict ["items"] as? JSONArray {
+                           
+                            for itemDict in itemsArray {
+                                
+                                let theArtist = Artist(dict: itemDict)
+                                
+                                print(theArtist.name)
+                                print(theArtist.artistID)
+                                
+                                DataStore.sharedInstance.addArtist(theArtist)
+                                
+                                
+                            }
+                        }
+                    }
+                    
+                
+                } else {
+                    print("i could not parse the jsonDictionary")
+                }
+            })
+            task.resume()
+            
+        }
+    }
+    
+    func fetchTracks(artistID: String) {
+        
+        let urlString = "https://api.spotify.com/v1/artists/\(artistID)/top-tracks?country=US"
+        
+        if let url = NSURL(string: urlString) {
+            
+            let task = session.dataTaskWithURL(url, completionHandler: {
+                
+                (data, response, error) in
                 
                 if error != nil {
                     print(error?.localizedDescription)
@@ -39,54 +73,129 @@ class APIController: NSObject {
                 }
                 
                 if let jsonDictionary = self.parseJSON(data) {
-                    
-                    if let artistsDict = jsonDictionary["artists"] as? JSONDictionary {
                         
-                        if let itemsArray = artistsDict["items"] as? JSONArray {
+                        if let tracksArray = jsonDictionary["tracks"] as? JSONArray {
                             
-                            for itemDict in itemsArray {
+                            for tracksDict in tracksArray {
                                 
-                                let theArtist = Artist(dict: itemDict)
+                                let theTrack = Track(dict: tracksDict)
+                                
+                                print(theTrack.name)
+                                print(theTrack.previewURL)
+                                
+                                DataStore.sharedInstance.addTrack(theTrack)
                                 
                                 
-                                print(theArtist.name)
-                                print(theArtist.artistID)
-                                
-                                DataStore.sharedInstance.addArtist(theArtist)
-                                
-                            
                             }
                         }
-                        
-                    }
+                
                     
+                    
+                } else {
+                    print("i could not parse the jsonDictionary")
+                }
+            
+            })
+            task.resume()
+            
+        }
+
+        
+    }
+    
+    func fetchAlbums(artistID: String) {
+        
+        let urlString = "https://api.spotify.com/v1/artists/\(artistID)/albums"
+        
+        if let url = NSURL(string: urlString) {
+            
+            let task = session.dataTaskWithURL(url, completionHandler: {
+                
+                (data, response, error) in
+                
+                if error != nil {
+                    print(error?.localizedDescription)
+                    return
+                }
+                
+                if let jsonDictionary = self.parseJSON(data) {
+                
+                        if let albumsArray = jsonDictionary["albums"] as? JSONArray {
+                        
+                            for albumsDict in albumsArray {
+                                
+                                let theAlbum = Album(dict: albumsDict)
+                                
+                                print(theAlbum.name)
+                                print(theAlbum.albumID)
+                                
+                                DataStore.sharedInstance.addAlbum(theAlbum)
+                            
+                            }
+                       }
                     
                     
                     
                 } else {
-                    
-                    print("I could not parse the jsonDictionary")
-                    
+                    print("i could not parse the jsonDictionary")
                 }
-                
-                
-                
-                
                 
             })
             task.resume()
             
-            
-            
         }
-        
-        
-        
-        
+
+                                
+                                
+      
     }
     
-    // This method allows us to send some NSData and get back a JSONDictionary
+    func fetchRelatedArtists(artistID: String) {
+        
+        let urlString = "https://api.spotify.com/v1/artists/\(artistID)/related-artists"
+        
+        if let url = NSURL(string: urlString) {
+            
+            let task = session.dataTaskWithURL(url, completionHandler: {
+                
+                (data, response, error) in
+                
+                if error != nil {
+                    print(error?.localizedDescription)
+                    return
+                }
+        
+                if let JSONDictionary = self.parseJSON(data) {
+                    
+                    if let relatedArtistsArray = JSONDictionary["artists"] as? JSONArray {
+                        
+                        for raDict in relatedArtistsArray {
+                            
+                            let relatedArtist = Artist(dict: raDict)
+                            
+                            print(relatedArtist.name)
+//                            print(relatedArtist.raID)
+                            
+                            DataStore.sharedInstance.addRelatedArtists(relatedArtist)
+                            
+                        }
+                    }
+                    
+                    
+                    
+                } else {
+                    print("i could not parse the jsonDictionary")
+                }
+                
+            })
+            task.resume()
+            
+        }
+
+        
     
+    }
+
     func parseJSON(data: NSData?) -> JSONDictionary? {
         
         var theDictionary : JSONDictionary? = nil
@@ -117,8 +226,6 @@ class APIController: NSObject {
         }
         
         return theDictionary
-    }
-
-
-
+}
+    
 }

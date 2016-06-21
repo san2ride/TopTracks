@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  TopTracksApp
 //
-//  Created by Phil Wright on 6/20/16.
-//  Copyright © 2016 Touchopia, LLC. All rights reserved.
+//  Created by don't touch me on 6/20/16.
+//  Copyright © 2016 trvl, LLC. All rights reserved.
 //
 
 import UIKit
