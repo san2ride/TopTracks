@@ -120,7 +120,7 @@ class APIController: NSObject {
                 
                 if let jsonDictionary = self.parseJSON(data) {
                 
-                        if let albumsArray = jsonDictionary["albums"] as? JSONArray {
+                        if let albumsArray = jsonDictionary["items"] as? JSONArray {
                         
                             for albumsDict in albumsArray {
                                 
