@@ -8,14 +8,14 @@
 
 import UIKit
 
-class ArtistViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ArtistViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     @IBOutlet weak var textField: UITextField!
-    let apiController = APIController()
-    
     @IBOutlet weak var tableView: UITableView!
     
-    var artistsArray = [Artist]()
+    let apiController = APIController()
+    var artistsArray = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,31 +23,40 @@ class ArtistViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return 1
-
+        return self.artistsArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("ArtistCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
         
-        cell.textLabel?.text = "Test"
+        cell.textLabel?.text = self.artistsArray[indexPath.row]
         
         return cell
-
-        
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        performSegueWithIdentifier("TracksSegue", sender:indexPath)
-        
-        
     }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        self.textField.resignFirstResponder()
+        
+        return true
     }
     
+}
+    
+    
+//        performSegueWithIdentifier("TracksSegue", sender: [indexPath.row]
+        
+    
+    
+    
+    
+    
+
+
 
     
 

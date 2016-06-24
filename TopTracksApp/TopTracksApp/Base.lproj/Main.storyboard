@@ -57,8 +57,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="Z15-bG-2IG"/>
                     <connections>
-                        <outlet property="tableView" destination="4RT-Ta-wab" id="hil-rY-TE0"/>
-                        <outlet property="textField" destination="VS2-V1-RA0" id="TKu-SQ-kaS"/>
+                        <outlet property="tableView" destination="4RT-Ta-wab" id="xDp-hf-2E8"/>
+                        <outlet property="textField" destination="VS2-V1-RA0" id="EDg-Pe-o58"/>
                         <segue destination="1FL-fB-fJK" kind="show" identifier="TracksSegue" id="loP-jx-B6Y"/>
                     </connections>
                 </viewController>
