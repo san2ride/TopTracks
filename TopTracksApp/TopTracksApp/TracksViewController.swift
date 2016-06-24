@@ -15,9 +15,12 @@ class TracksViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.apiController.fetchArtists("5I3UdCxtIh6hkQ7rMPUvA4")
+        
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return 1
     }
     
@@ -25,7 +28,8 @@ class TracksViewController: UIViewController, UITableViewDataSource, UITableView
         
         let cell = tableView.dequeueReusableCellWithIdentifier("TracksCell", forIndexPath: indexPath)
         
-        cell.textLabel?.text = "TEST"
+        
+        cell.textLabel?.text = "test"
         
         return cell
     }

@@ -14,6 +14,8 @@ class RelatedViewController: UIViewController, UITableViewDataSource, UITableVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.apiController.fetchArtists("5I3UdCxtIh6hkQ7rMPUvA4")
 
     }
     
